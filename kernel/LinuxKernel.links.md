@@ -48,9 +48,9 @@ https://rockylinux.org
 
 
 # BIOS and bootloader
-coreboot.org  github.com/coreboot
+https://coreboot.org  github.com/coreboot
 
-linuxboot.org github.com/linuxboot
+https://linuxboot.org github.com/linuxboot
 
 # APP  fd.io vpp
 https://github.com/FDio/vpp
@@ -84,9 +84,11 @@ run -c ../startup.conf
 
 x/16xg addr
 
+```
 ;db_ptr
 x/gx $rax
 
 x/gx *((uint64_t*)$rax)
 
 x/s *((uint64_t*)*((uint64_t*)$rax))
+```
