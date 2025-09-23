@@ -17,6 +17,10 @@ https://www.agner.org/optimize/optimizing_assembly.pdf
 
 https://www.agner.org/optimize/instruction_tables.pdf
 
+superscalar
+
+https://www.lighterra.com/papers/modernmicroprocessors/
+
 
 # file format ELF64, objdump, [Preprocessing, Compilation, Assembling, Linking]
 https://talks.harshkapadia.me/elf/content.html
