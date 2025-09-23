@@ -6,6 +6,17 @@ https://github.com/0xAX/linux-insides/blob/master/SUMMARY.md
 ;ld exeve
 http://dbp-consulting.com/tutorials/debugging/linuxProgramStartup.html
 
+# x86-64
+uOPS microcode instruction
+
+https://www.agner.org/optimize/
+
+https://www.agner.org/optimize/microarchitecture.pdf
+
+https://www.agner.org/optimize/optimizing_assembly.pdf
+
+https://www.agner.org/optimize/instruction_tables.pdf
+
 
 # file format ELF64, objdump, [Preprocessing, Compilation, Assembling, Linking]
 https://talks.harshkapadia.me/elf/content.html
