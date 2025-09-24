@@ -7,7 +7,7 @@ char buf1[8] = {0};
 // buf2 in initialized global vars area
 char buf2[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
-init main (int argc, char *argv[]}  /* char **argv */
+int main (int argc, char *argv[])  /* char **argv */
 {
   char buf3[8]; // buf3 on stack
   char *buf4;   // buf4 on stack (pointer)
