@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-// buf1 in zero-initialized global vars area
+// buf1 in zero-initialized global vars area [section .bss]
 char buf1[8] = {0};
-// buf2 in initialized global vars area
+// buf2 in initialized global vars area  [section .data]
 char buf2[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
 int main (int argc, char *argv[])  /* char **argv */
@@ -14,6 +14,6 @@ int main (int argc, char *argv[])  /* char **argv */
   buf4 = malloc(8); // buf4 points to heap
 
   strcpy(buf1, argv[1]);
-  printf("We got the input string: %s \n",buf1);
+  printf("We got the input string: %s \n",buf1); // "We got..." [section .rodata]
   return 0;
 }
