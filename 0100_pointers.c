@@ -40,3 +40,21 @@ int main(void) {
   
     return(0);
 }
+/*
+clang 0100_pointers.c
+./a.out
+num = 6, address 0x7ffc42044694, size=4
+ptr = 0x7ffc42044694, address 0x7ffc42044688, size=8, *ptr=6
+
+After *ptr=20
+num = 20, address 0x7ffc42044694, size=4
+ptr = 0x7ffc42044694, address 0x7ffc42044688, size=8, *ptr=20
+
+ptr & num: 
+  ptr = 0x7ffc42044694
+  *ptr = 20
+  num = 20
+  &num = 0x7ffc42044694
+  *(&num) = 20
+  &(*ptr) = 0x7ffc42044694
+*/
