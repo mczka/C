@@ -1,0 +1,122 @@
+int power (int x, int y)
+{
+    return x*y;
+}
+int* newint_ret(int val) {
+    int* newptr;
+   // newptr = malloc(sizeof(int));
+    *newptr = val*val;
+    return newptr;
+}
+
+void newint_parm(int** ptr, int val) {
+    int* newptr;
+   // newptr = malloc(sizeof(int));
+    *newptr = val*val;
+    *ptr = newptr;  /* Dereferencing ptr gives me an alias of the pointer that was passed */
+}
+
+#define ELTS 10
+
+int main ()
+{
+    int    val;
+    int*   ptr;
+    int** dptr;
+    int(*fnptr) (int,int);
+    int  arr[ELTS];
+    int* arrptr;
+    val = 512;
+    ptr = &val;
+    dptr = &ptr;
+    fnptr = power;
+    arrptr = arr; /* ptr = arr; or ptr = &arr[0]; */
+    *(ptr + 1) = 11; /* arr[1]=11; or *(array+1)=11; pointer arithmetic*/
+    arr[2]=22; arr[3]=33;
+    *(arr+4)=44; *(ptr+5)=55;
+    arr[6]=66; arr[7]=77;
+    ptr[ELTS-2]=88; ptr[ELTS-1] = 99; /* array indexing using pointer name */
+    ptr = newint_ret(64);
+    newint_parm(&ptr, 1024);
+    return fnptr(3,5);
+}
+
+############## godbolt.org
+-O0 -m64 -mapxf -mapx-inline-asm-use-gpr32 -mavx10.2
+
+power(int, int):
+        pushp   rbp
+        mov     rbp, rsp
+        mov     dword ptr [rbp - 4], edi
+        mov     dword ptr [rbp - 8], esi
+        mov     eax, dword ptr [rbp - 4]
+        imul    eax, dword ptr [rbp - 8]
+        popp    rbp
+        ret
+
+newint_ret(int):
+        pushp   rbp
+        mov     rbp, rsp
+        mov     dword ptr [rbp - 4], edi
+        mov     eax, dword ptr [rbp - 4]
+        {nf}    imul    ecx, eax, dword ptr [rbp - 4]
+        mov     rax, qword ptr [rbp - 16]
+        mov     dword ptr [rax], ecx
+        mov     rax, qword ptr [rbp - 16]
+        popp    rbp
+        ret
+
+newint_parm(int**, int):
+        pushp   rbp
+        mov     rbp, rsp
+        mov     qword ptr [rbp - 8], rdi
+        mov     dword ptr [rbp - 12], esi
+        mov     eax, dword ptr [rbp - 12]
+        {nf}    imul    ecx, eax, dword ptr [rbp - 12]
+        mov     rax, qword ptr [rbp - 24]
+        mov     dword ptr [rax], ecx
+        mov     rcx, qword ptr [rbp - 24]
+        mov     rax, qword ptr [rbp - 8]
+        mov     qword ptr [rax], rcx
+        popp    rbp
+        ret
+
+main:
+        pushp   rbp
+        mov     rbp, rsp
+        sub     rsp, 96
+        mov     dword ptr [rbp - 4], 0
+        mov     dword ptr [rbp - 8], 512
+        lea     rax, [rbp - 8]
+        mov     qword ptr [rbp - 16], rax
+        lea     rax, [rbp - 16]
+        mov     qword ptr [rbp - 24], rax
+        lea     rax, [rip + power(int, int)]
+        mov     qword ptr [rbp - 32], rax
+        lea     rax, [rbp - 80]
+        mov     qword ptr [rbp - 88], rax
+        mov     rax, qword ptr [rbp - 16]
+        mov     dword ptr [rax + 4], 11
+        mov     dword ptr [rbp - 72], 22
+        mov     dword ptr [rbp - 68], 33
+        mov     dword ptr [rbp - 64], 44
+        mov     rax, qword ptr [rbp - 16]
+        mov     dword ptr [rax + 20], 55
+        mov     dword ptr [rbp - 56], 66
+        mov     dword ptr [rbp - 52], 77
+        mov     rax, qword ptr [rbp - 16]
+        mov     dword ptr [rax + 32], 88
+        mov     rax, qword ptr [rbp - 16]
+        mov     dword ptr [rax + 36], 99
+        mov     edi, 64
+        call    newint_ret(int)
+        mov     qword ptr [rbp - 16], rax
+        lea     rdi, [rbp - 16]
+        mov     esi, 1024
+        call    newint_parm(int**, int)
+        mov     edi, 3
+        mov     esi, 5
+        call    qword ptr [rbp - 32]
+        add     rsp, 96
+        popp    rbp
+        ret
