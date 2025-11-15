@@ -1,0 +1,126 @@
+$ clang --std=c17 -Wall example_asm_pointers.c 
+$ ./a.out 
+A POINTER is a variable that holds the memory address of a variable
+A DOUBLE POINTER is a variable that holds the memory address of a pointer variable
+
+   & : reference operator   - returns the address
+   * : dereference operator - returns an alias [value]
+
+int    val;
+int*   ptr;
+int** dptr;
+int(*fnptr) (int,int,int);
+int   arr[ELTS];
+int*  arrptr;
+int*  ptr1=NULL;
+int*  ptr2=NULL;
+
+       ADDR             DATA
++----------------+----------------+
+| 0x7ffe66380a44 |          32766 | arr[9] (arr[ELTS-1])
++----------------+----------------+
+...
++----------------+----------------+
+| 0x7ffe66380a20 |     1714948760 | arr[0]
++----------------+----------------+
+| 0x7ffe66380a1c |            512 |  val (**dptr=value or *ptr=value or val=value)
++----------------+----------------+
+| 0x7ffe66380a10 | 0x7ffe66380a1c |  ptr (ptr=&val or *dptr=ptr)
++----------------+----------------+
+| 0x7ffe66380a08 | 0x7ffe66380a10 | dptr (dptr=&ptr)
++----------------+----------------+
+| 0x7ffe66380a00 | 0x5642875a11b0 | fnptr (fnptr=power)
++----------------+----------------+
+| 0x7ffe663809f8 | 0x7ffe66380a20 | arrptr (arrptr=arr or =&arr[0])
++----------------+----------------+
+| 0x7ffe663809f0 |              0 | ptr1 (ptr1=NULL)
++----------------+----------------+
+| 0x7ffe663809e8 |              0 | ptr2 (ptr2=NULL)
++----------------+----------------+
+
+Operator Variable = value
+    val	= 512
+   &val	= 0x7ffe66380a1c
+    ptr	= 0x7ffe66380a1c
+   *ptr	= 512
+   &ptr	= 0x7ffe66380a10
+   dptr	= 0x7ffe66380a10
+  *dptr	= 0x7ffe66380a1c
+ **dptr	= 512
+  &dptr	= 0x7ffe66380a08
+*(&val)	= 512
+&(*ptr)	= 0x7ffe66380a1c
+
+                                                     **dptr = value
+                            *dptr = ptr                *ptr = value
+    dptr = &ptr               ptr = &val                val = value
++---------------+          +---------------+        +---------------+
+|0x7ffe66380a10 |   --->   |0x7ffe66380a1c |  --->  |           512 |
++---------------+          +---------------+        +---------------+
+ 0x7ffe66380a08             0x7ffe66380a10           0x7ffe66380a1c
+&dptr                      &ptr                     &val
+
+int* newint_return (int x, int y); /* return pointer */
+ptr1=newint_return(16,16);
++----------------+----------------+
+| 0x7ffe663809a0 | 0x7fe697c7bc80 | newptr NEWINT_RETURN STACK FRAME
++----------------+----------------+
+| 0x7ffe663809f0 | 0x7fe697c7bc80 | ptr1 MAIN STACK FRAME
++----------------+----------------+
+| 0x7fe697c7bc80 |            256 | *ptr1 HEAP MEMORY
++----------------+----------------+
+
+void newint_param(int ** ptr, int val); /*  pass &pointer to  ** ptr */
+newint_param(&ptr2,1024);
++----------------+----------------+
+| 0x7ffe66380998 | 0x7fe697c7bc90 | newptr NEWINT_PARAM STACK FRAME
++----------------+----------------+
+| 0x7ffe663809a0 | 0x7ffe663809e8 | ptr (dptr) NEWINT_PARAM STACK FRAME
++----------------+----------------+
+| 0x7ffe663809e8 | 0x7fe697c7bc90 | ptr  NEWINT_PARAM STACK FRAME
++----------------+----------------+
+| 0x7ffe663809e8 | 0x7fe697c7bc90 | ptr2 MAIN STACK FRAME
++----------------+----------------+
+| 0x7fe697c7bc90 |        1048576 | *ptr2 HEAP MEMORY
++----------------+----------------+
+
+Array indexing and pointer arithmetic
+Array indexing arr[i], Pointer arithmetic (ptr+i) behind the scene (ptr+i*sizeof(int))
+
+ptr = arr; or ptr = &arr[0];
+*(ptr+0)=0; or arr[0]=0;
+*(ptr+1)=11; or arr[1]=11; or *(arr+1)=11;
+arr[2]=22; arr[3]=33; *(arr+4)=44; *(ptr+5)=55; arr[6]=66; arr[7]=77; ptr[ELTS-2]=88; ptr[ELTS-1]=99;
+if ptr++ or ptr-- at this point the ptr does not point to the start of the array
+Array initialised:
+arr[0]=0 arr[1]=11 arr[2]=22 arr[3]=33 arr[4]=44 arr[5]=55 arr[6]=66 arr[7]=77 arr[8]=88 arr[9]=99 
+
+       ADDR             DATA
++----------------+----------------+
+| 0x7ffe66380a20 |              0 | arr[0] (ptr=arr; or ptr=&arr[0];)
++----------------+----------------+
+| 0x7ffe66380a24 |             11 | arr[1]
++----------------+----------------+
+| 0x7ffe66380a28 |             22 | arr[2]
++----------------+----------------+
+| 0x7ffe66380a2c |             33 | arr[3]
++----------------+----------------+
+| 0x7ffe66380a30 |             44 | arr[4]
++----------------+----------------+
+| 0x7ffe66380a34 |             55 | arr[5]
++----------------+----------------+
+| 0x7ffe66380a38 |             66 | arr[6]
++----------------+----------------+
+| 0x7ffe66380a3c |             77 | arr[7]
++----------------+----------------+
+| 0x7ffe66380a40 |             88 | arr[8]
++----------------+----------------+
+| 0x7ffe66380a44 |             99 | arr[9] (arr[ELTS-1])
++----------------+----------------+
+
+Are arraays and pointers the same?
+ sizeof(array) = 40
+ sizeof(ptr) = 8
+   You can assign a value to a pointer, but not an array name
+   VALID ptr = &ii;
+   ERROR array = &ii;
