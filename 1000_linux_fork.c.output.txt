@@ -1,0 +1,7 @@
+$ ./a.out 
+hello from parent process pid=9406
+BYE from process pid=9405
+FORK() run ONCE returns/executed TWICE
+hello from child process pid=0
+BYE from process pid=9406
+FORK() run ONCE returns/executed TWICE
