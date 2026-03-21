@@ -1,0 +1,5 @@
+./a.out 
+hello from child process pid=13778
+hello from parent process pid=0
+BYE from process pid=13778
+1774097731
